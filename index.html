@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Header</title>
+    <link rel="icon" href="data:,">
+
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <div id="main">
+        <div id="header">
+            <div id="logo">
+                <img src="spotify.svg" class="invert" alt="Logo">
+            </div>
+            <div id="hamburger">
+                <img src="hamburger.svg" class="invert" alt="Menu">
+            </div>
+            <div id="search">
+                <img src="search.svg" class="invert" alt="Search">
+            </div>
+            <div id="login">
+                <h1 class="invert">Login</h1>
+            </div>
+        </div>
+        <div id="fakeheader"></div>
+
+        <div id="page1">
+            <div id="library">
+                <h1>Your library</h1>
+                <audio id="audio" src="/i_hear_voices.mp3"></audio>
+            </div>
+
+            <div id="songplay">
+                <img src="https://i.pinimg.com/736x/85/90/6d/85906d07c59880705fe83dc0488b78b6.jpg" alt="Album Art" id="mainimg">
+                <div id="time">
+                    <span id="currentTime">0:00</span> / <span id="totalTime">0:00</span>
+                </div>
+                <div id="playbar">
+                    <img src="/previous.svg" alt="" id="previousbtn">
+                    <img src="/pause.svg" alt="" id="playBtn">
+                    <img src="/next.svg" alt="" id="nextbtn">
+                </div>
+                <div id="seekbaar">
+                    <input type="range" id="seek" value="0" min="0" max="100">
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
