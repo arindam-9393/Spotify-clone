@@ -1,8 +1,8 @@
 // ===== Get elements =====
-let nextBtn = document.getElementById("nextbtn");
-let prevBtn = document.getElementById("previousbtn");
 let audio = document.getElementById("audio");
 let playPauseBtn = document.getElementById("playBtn");
+let nextBtn = document.getElementById("nextbtn");
+let prevBtn = document.getElementById("previousbtn");
 let mainimg = document.getElementById("mainimg");
 let seekBar = document.querySelector("#seekbaar input[type='range']");
 let currentTimeEl = document.getElementById("currentTime");
@@ -24,12 +24,22 @@ document.getElementById("logo").addEventListener("click", () => {
 playPauseBtn.addEventListener("click", function () {
     if (audio.paused) {
         audio.play();
-        playPauseBtn.src = "assets/pause.svg";
+        playPauseBtn.src = "assets/play.svg";
     } else {
         audio.pause();
-        playPauseBtn.src = "assets/play.svg";
+        playPauseBtn.src = "assets/pause.svg";
     }
 });
+
+// ===== Update button image automatically on play/pause =====
+audio.addEventListener("play", function () {
+    playPauseBtn.src = "assets/play.svg";
+});
+
+audio.addEventListener("pause", function () {
+    playPauseBtn.src = "assets/pause.svg";
+});
+
 
 audio.addEventListener("ended", function () {
     playPauseBtn.src = "assets/play.svg";
@@ -63,16 +73,17 @@ async function getdata() {
     let data = await res.json();
     let currentIndex = -1;
 
+    // ===== Play a song =====
     function playSong(index) {
         let song = data.results[index];
         audio.src = song.previewUrl;
         audio.play();
-        playPauseBtn.src = "assets/pause.svg";
-        mainimg.src = song.artworkUrl100;
+        playPauseBtn.src = "assets/pause.svg"; // show pause when playing
+        mainimg.src = song.artworkUrl100;      // update album art
         currentIndex = index;
     }
 
-    // Create library items
+    // ===== Create library items =====
     data.results.forEach((song, i) => {
         let songItem = document.createElement("div");
         songItem.innerHTML = `
@@ -88,14 +99,14 @@ async function getdata() {
         libraryDiv.appendChild(songItem);
     });
 
-    // Next button
+    // ===== Next button =====
     nextBtn.addEventListener("click", function () {
         if (currentIndex < data.results.length - 1) {
             playSong(currentIndex + 1);
         }
     });
 
-    // Previous button
+    // ===== Previous button =====
     prevBtn.addEventListener("click", function () {
         if (currentIndex > 0) {
             playSong(currentIndex - 1);
