@@ -8,6 +8,9 @@ let seekBar = document.querySelector("#seekbaar input[type='range']");
 let currentTimeEl = document.getElementById("currentTime");
 let totalTimeEl = document.getElementById("totalTime");
 let libraryDiv = document.getElementById("library");
+nextBtn.src = "assets/next.svg";
+prevBtn.src = "assets/previous.svg";
+audio.src = "i_hear_voices.mp3";
 
 // ===== Hamburger toggle =====
 const hamburgerBtn = document.getElementById("hamburger");
