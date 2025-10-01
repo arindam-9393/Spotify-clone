@@ -8,6 +8,8 @@ let seekBar = document.querySelector("#seekbaar input[type='range']");
 let currentTimeEl = document.getElementById("currentTime");
 let totalTimeEl = document.getElementById("totalTime");
 let libraryDiv = document.getElementById("library");
+
+// Set initial icon paths if needed (optional, as HTML already does this)
 nextBtn.src = "assets/next.svg";
 prevBtn.src = "assets/previous.svg";
 audio.src = "i_hear_voices.mp3";
@@ -27,24 +29,24 @@ document.getElementById("logo").addEventListener("click", () => {
 playPauseBtn.addEventListener("click", function () {
     if (audio.paused) {
         audio.play();
-        playPauseBtn.src = "assets/play.svg";
     } else {
         audio.pause();
-        playPauseBtn.src = "assets/pause.svg";
     }
 });
 
-// ===== Update button image automatically on play/pause =====
+// ===== Update button image automatically on play/pause/ended =====
 audio.addEventListener("play", function () {
+    // When audio plays, show the PAUSE icon
     playPauseBtn.src = "assets/play.svg";
 });
 
 audio.addEventListener("pause", function () {
+    // When audio is paused, show the PLAY icon
     playPauseBtn.src = "assets/pause.svg";
 });
 
-
 audio.addEventListener("ended", function () {
+    // When the song ends, show the PLAY icon
     playPauseBtn.src = "assets/play.svg";
 });
 
@@ -72,49 +74,58 @@ seekBar.addEventListener("input", function () {
 
 // ===== Fetch songs from iTunes =====
 async function getdata() {
-    let res = await fetch('https://itunes.apple.com/search?term=arijit+singh&media=music&limit=50');
-    let data = await res.json();
-    let currentIndex = -1;
+    try {
+        let res = await fetch('https://itunes.apple.com/search?term=arijit+singh&media=music&limit=50');
+        let data = await res.json();
+        let currentIndex = -1;
 
-    // ===== Play a song =====
-    function playSong(index) {
-        let song = data.results[index];
-        audio.src = song.previewUrl;
-        audio.play();
-        playPauseBtn.src = "assets/pause.svg"; // show pause when playing
-        mainimg.src = song.artworkUrl100;      // update album art
-        currentIndex = index;
-    }
+        // ===== Play a song =====
+        function playSong(index) {
+            let song = data.results[index];
+            audio.src = song.previewUrl;
+            audio.play();
+            mainimg.src = song.artworkUrl100; // update album art
+            currentIndex = index;
+        }
 
-    // ===== Create library items =====
-    data.results.forEach((song, i) => {
-        let songItem = document.createElement("div");
-        songItem.innerHTML = `
-            <img src="${song.artworkUrl100}" alt="Cover" width="50">
-            <strong>${song.trackName}</strong> - ${song.artistName}
-        `;
-        songItem.style.cursor = "pointer";
+        // ===== Create library items =====
+        data.results.forEach((song, i) => {
+            let songItem = document.createElement("div");
+            songItem.innerHTML = `
+                <img src="${song.artworkUrl100}" alt="Cover" width="50" style="vertical-align: middle; margin-right: 10px;">
+                <span style="display: inline-block; vertical-align: middle;">
+                    <strong>${song.trackName}</strong><br>
+                    ${song.artistName}
+                </span>
+            `;
+            songItem.style.cursor = "pointer";
+            songItem.style.padding = "10px";
 
-        songItem.addEventListener("click", () => {
-            playSong(i);
+            songItem.addEventListener("click", () => {
+                playSong(i);
+            });
+
+            libraryDiv.appendChild(songItem);
         });
 
-        libraryDiv.appendChild(songItem);
-    });
+        // ===== Next button =====
+        nextBtn.addEventListener("click", function () {
+            if (currentIndex < data.results.length - 1) {
+                playSong(currentIndex + 1);
+            }
+        });
 
-    // ===== Next button =====
-    nextBtn.addEventListener("click", function () {
-        if (currentIndex < data.results.length - 1) {
-            playSong(currentIndex + 1);
-        }
-    });
+        // ===== Previous button =====
+        prevBtn.addEventListener("click", function () {
+            if (currentIndex > 0) {
+                playSong(currentIndex - 1);
+            }
+        });
 
-    // ===== Previous button =====
-    prevBtn.addEventListener("click", function () {
-        if (currentIndex > 0) {
-            playSong(currentIndex - 1);
-        }
-    });
+    } catch (error) {
+        console.error("Failed to fetch songs:", error);
+        libraryDiv.innerHTML += "<p>Could not load song library.</p>";
+    }
 }
 
 // ===== Initialize =====
